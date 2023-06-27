@@ -14,10 +14,10 @@ function Sidebar() {
       {/* sidebarLeft */}
       <div className="sidebarLeft">
         <div className="serverIcon">
-          <img src="./logo192.png" alt="" />
+          <img src="./discordicon.png" alt="" />
         </div>
         <div className="serverIcon">
-          <img src="./logo192.png" alt="" />
+          <img src="./discordicon.png" alt="" />
         </div>
       </div>
       {/* sidebarRight */}
