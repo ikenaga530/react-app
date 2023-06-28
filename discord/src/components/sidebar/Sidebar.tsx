@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Sidebar.scss";
 import "./reset.css";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -7,8 +7,29 @@ import KeyboardVoiceIcon from "@mui/icons-material/KeyboardVoice";
 import HeadphonesIcon from "@mui/icons-material/Headphones";
 import SettingsIcon from "@mui/icons-material/Settings";
 import SidebarChannel from "./SidebarChannel";
+import { auth, db } from "../../firebase";
+import { useAppSelector } from "../../app/hokks";
+import { DocumentData, addDoc, collection, query } from "firebase/firestore";
+import { onSnapshot } from "firebase/firestore";
+import useCollection from "../../hooks/useCollection";
+
+interface Channel {
+  id: string;
+  channel: DocumentData;
+}
 
 function Sidebar() {
+  const user = useAppSelector((state) => state.user.user);
+  const { documents: channels } = useCollection("channels");
+
+  const addChannel = async () => {
+    let channelName: string | null = prompt("新しいチャンネルを作成します");
+
+    if (channelName) {
+      await addDoc(collection(db, "channels"), { channelName: channelName });
+    }
+  };
+
   return (
     <div className="sidebar">
       {/* sidebarLeft */}
@@ -33,22 +54,25 @@ function Sidebar() {
               <ExpandMoreIcon />
               <h4>プログラミングチャンネル</h4>
             </div>
-            <AddIcon className="sidebarAddIcon" />
+            <AddIcon className="sidebarAddIcon" onClick={() => addChannel()} />
           </div>
 
           <div className="sidebarChannelList">
-            <SidebarChannel />
-            <SidebarChannel />
-            <SidebarChannel />
-            <SidebarChannel />
+            {channels.map((channel) => (
+              <SidebarChannel
+                channel={channel}
+                id={channel.id}
+                key={channel.id}
+              />
+            ))}
           </div>
 
           <div className="sidebarFooter">
             <div className="sidebarAccount">
-              <img src="./icon.png" alt="" />
+              <img src={user?.photo} alt="" onClick={() => auth.signOut()} />
               <div className="accountName">
-                <h4>ShinCode</h4>
-                <span>#8162</span>
+                <h4>{user?.displayName}</h4>
+                <span>#{user?.uid.substring(0, 4)}</span>
               </div>
             </div>
 
