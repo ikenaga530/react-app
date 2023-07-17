@@ -1,8 +1,9 @@
 import React, { useState } from "react";
+import { useRecoilState } from "recoil";
+import { addCount } from "../state/addCount";
 
 const PraState = () => {
-  const [count, setCount] = useState<number>(0);
-
+  const [count, setCount] = useRecoilState<number>(addCount);
   const handleClickPlus = () => {
     setCount(count + 1);
   };
